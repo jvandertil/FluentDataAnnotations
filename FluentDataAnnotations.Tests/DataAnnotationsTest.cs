@@ -16,9 +16,7 @@
     along with the Fluent DataAnnotations Library.  If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FluentDataAnnotations.Tests
@@ -34,6 +32,21 @@ namespace FluentDataAnnotations.Tests
             annotations.AnnotateProperty(x => x.Name).AddRawAttribute(new NonSerializedAttribute());
 
             Assert.AreEqual(1, annotations.Annotations.Count);
+        }
+
+        [TestMethod]
+        public void TestGetPropertyDescriptor1M()
+        {
+            var provider = new DataAnnotationsTypeDescriptionProvider(TypeDescriptor.GetProvider(typeof (TestEntity)));
+
+            var start = DateTime.Now;
+            for(int i = 0; i < 1000000; i++)
+            {
+                provider.GetTypeDescriptor(typeof (TestEntity), null);
+            }
+            var end = DateTime.Now;
+
+            Console.WriteLine(end - start);
         }
     }
 

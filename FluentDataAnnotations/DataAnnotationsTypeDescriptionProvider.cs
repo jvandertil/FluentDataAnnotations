@@ -16,15 +16,19 @@
     along with the Fluent DataAnnotations Library.  If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace FluentDataAnnotations
 {
     public class DataAnnotationsTypeDescriptionProvider : TypeDescriptionProvider
     {
         private readonly Assembly _metadataAssembly;
+        private static readonly DataAnnotationsCache Cache = new DataAnnotationsCache();
+        public const bool CACHING = true;
 
         public DataAnnotationsTypeDescriptionProvider(TypeDescriptionProvider existingProvider)
             : this(existingProvider, null)
@@ -42,29 +46,84 @@ namespace FluentDataAnnotations
             var assembly = (_metadataAssembly ?? objectType.Assembly);
             //select all classes that inherit from fluentmetadata
             // Example: ProductMetadata -> FluentMetadata<Product> -> FluentMetadata
-            //TODO: This cacheable? Probably is...
-            //TODO: Better (ab)use of Reflection.
-            var types = from a in assembly.GetTypes()
-                                      where a.BaseType != null && a.BaseType.IsSubclassOf(typeof(DataAnnotations))
-                                      select a;
+            DataAnnotations annotations;
 
-            //select all classes that have the specified objectType as generic parameter.
-            var type = (from a in types
-                         where a.BaseType.GetGenericArguments().Contains(objectType)
-                         select a).SingleOrDefault();
-
-            //instantiate the metadata type
-            if (type == null)
+            if (CACHING && Cache.IsInCache(objectType))
             {
-                //No FluentMetadata found for type, try searching in global?
-                //Returning base for now.
-                return base.GetTypeDescriptor(objectType, instance);
+                annotations = Cache.RetreiveFromCache(objectType);
             }
+            else
+            {
+                var types = from a in assembly.GetTypes()
+                            where a.BaseType != null && a.BaseType.IsSubclassOf(typeof (DataAnnotations))
+                            select a;
 
-            var annotations = assembly.CreateInstance(type.FullName) as DataAnnotations;
+                //select all classes that have the specified objectType as generic parameter.
+                var type = (from a in types
+                            where a.BaseType.GetGenericArguments().Contains(objectType)
+                            select a).SingleOrDefault();
+
+                //instantiate the metadata type
+                if (type == null)
+                {
+                    //No FluentMetadata found for type, try searching in global?
+                    //Returning base for now.
+                    return base.GetTypeDescriptor(objectType, instance);
+                }
+
+                annotations = assembly.CreateInstance(type.FullName) as DataAnnotations;
+
+                Cache.AddToCache(objectType, annotations);
+            }
 
             //process it.
             return new DataAnnotationsPropertyDescriptor(annotations.Annotations, base.GetTypeDescriptor(objectType, instance));
+        }
+    }
+
+    internal class DataAnnotationsCache
+    {
+        public IDictionary<Type, DataAnnotations> Cache = new Dictionary<Type, DataAnnotations>();
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+
+        public bool IsInCache(Type type)
+        {
+            if(type == null)
+                return false;
+
+            _lock.EnterReadLock();
+
+            try
+            {
+                return Cache.ContainsKey(type);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+
+        public DataAnnotations RetreiveFromCache(Type type)
+        {
+            _lock.EnterReadLock();
+
+            try
+            {
+                return Cache[type];
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+
+        public void AddToCache(Type type, DataAnnotations annotations)
+        {
+            _lock.EnterWriteLock();
+
+            Cache[type] = annotations;
+
+            _lock.ExitWriteLock();
         }
     }
 }

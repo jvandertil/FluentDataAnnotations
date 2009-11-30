@@ -16,6 +16,7 @@
     along with the Fluent DataAnnotations Library.  If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -26,6 +27,7 @@ namespace FluentDataAnnotations.Mvc
 {
     public class MvcDataAnnotationsModelBinder : DefaultModelBinder
     {
+        protected static IDictionary<Type, IPropertyBinder> PropertyBinders = new Dictionary<Type, IPropertyBinder>();
         protected static DataAnnotationsTypeDescriptionProvider TypeDescriptionProvider;
 
         protected override bool OnPropertyValidating(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value)
@@ -36,6 +38,17 @@ namespace FluentDataAnnotations.Mvc
             return IsBindable(modelType, propertyName)
                        ? base.OnPropertyValidating(controllerContext, bindingContext, propertyDescriptor, value)
                        : false;
+        }
+
+        protected override void SetProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value)
+        {
+            if (PropertyBinders.ContainsKey(propertyDescriptor.PropertyType))
+            {
+                //Replace form value with value we got from the PropertyBinder
+                value = PropertyBinders[propertyDescriptor.PropertyType].BindProperty(controllerContext, bindingContext);
+            }
+
+            base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);
         }
 
         protected override void OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext)
@@ -57,6 +70,7 @@ namespace FluentDataAnnotations.Mvc
             var properties = descriptor.GetProperties();
             var attributes = properties[propertyName].Attributes.OfType<DenyClientModificationAttribute>();
 
+            //if(attributes.Count > 0) there is a DenyClientModificationAttribute so not bindable.
             return !(attributes.Count() > 0);
         }
     }
