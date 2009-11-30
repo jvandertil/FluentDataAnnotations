@@ -30,7 +30,7 @@ namespace FluentDataAnnotations.xVal
     {
         public class FluentDataAnnotationsRuleProvider : CachingRulesProvider
         {
-            readonly RuleEmitterList<ValidationAttribute> _ruleEmitters = new RuleEmitterList<ValidationAttribute>();
+            private readonly RuleEmitterList<ValidationAttribute> _ruleEmitters = new RuleEmitterList<ValidationAttribute>();
             private readonly DataAnnotationsTypeDescriptionProvider _provider;
 
             public FluentDataAnnotationsRuleProvider(DataAnnotationsTypeDescriptionProvider provider)
