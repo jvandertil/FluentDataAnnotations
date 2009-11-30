@@ -6,11 +6,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataAnnotations.Tests", "FluentDataAnnotations.Tests\FluentDataAnnotations.Tests.csproj", "{166B86CD-EF51-4F0F-970D-85F47838EA51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B13EF8A-F635-41A1-82FA-B5D363813264}"
-	ProjectSection(SolutionItems) = preProject
-		FluentDataAnnotations.vsmdi = FluentDataAnnotations.vsmdi
-		Local.testsettings = Local.testsettings
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataAnnotations.RiaServices", "FluentDataAnnotations.RiaServices\FluentDataAnnotations.RiaServices.csproj", "{6602EBFD-A7C4-4E75-B9BB-2C062622C0E4}"
 EndProject
