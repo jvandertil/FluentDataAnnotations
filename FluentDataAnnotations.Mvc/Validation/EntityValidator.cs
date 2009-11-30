@@ -1,13 +1,32 @@
+/*  Copyright (C) 2009 Jos van der Til
+    
+    This file is part of the Fluent DataAnnotations Library.
+
+    The Fluent DataAnnotations Library is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The Fluent Metadata Library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with the Fluent DataAnnotations Library.  If not, see <http://www.gnu.org/licenses/>.
+ */
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using FluentDataAnnotations.Validation;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using FluentDataAnnotations.Validation;
 
 namespace FluentDataAnnotations.Mvc.Validation
 {
     public class EntityValidator : IEntityValidator
     {
+        #region IEntityValidator Members
+
         public IValidationState Validate(object entity)
         {
             var result = new ValidationState();
@@ -15,21 +34,23 @@ namespace FluentDataAnnotations.Mvc.Validation
             var provider = new DataAnnotationsTypeDescriptionProvider(TypeDescriptor.GetProvider(entity));
 
             //Get all properties for TEntity
-            var properties = from prop in provider.GetTypeDescriptor(entity.GetType(), entity)
-                                 .GetProperties().Cast<PropertyDescriptor>()
-                             select prop;
+            IEnumerable<PropertyDescriptor> properties =
+                from prop in provider.GetTypeDescriptor(entity.GetType(), entity)
+                                        .GetProperties().Cast<PropertyDescriptor>()
+                select prop;
 
-            foreach (var property in properties)
+            foreach (PropertyDescriptor property in properties)
             {
-                var propertyValue = property.GetValue(entity);
+                object propertyValue = property.GetValue(entity);
 
                 //Get ValidationAttributes for property
-                var attributes = property.Attributes.OfType<ValidationAttribute>();
+                IEnumerable<ValidationAttribute> attributes = property.Attributes.OfType<ValidationAttribute>();
 
-                foreach (var attr in from attr in attributes
-                                     let validationResult = attr.GetValidationResult(propertyValue, validationContext)
-                                     where validationResult != ValidationResult.Success
-                                     select attr)
+                foreach (ValidationAttribute attr in from attr in attributes
+                                                     let validationResult =
+                                                         attr.GetValidationResult(propertyValue, validationContext)
+                                                     where validationResult != ValidationResult.Success
+                                                     select attr)
                 {
                     result.Add(property.Name, attr.FormatErrorMessage(property.Name));
                 }
@@ -37,5 +58,7 @@ namespace FluentDataAnnotations.Mvc.Validation
 
             return result;
         }
+
+        #endregion
     }
 }
