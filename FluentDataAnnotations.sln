@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataAnnotations.RiaSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataAnnotations.xVal", "FluentDataAnnotations.xVal\FluentDataAnnotations.xVal.csproj", "{3B7D6E7E-246A-4DF3-B53E-AE258B897EDA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataAnnotations.Mvc", "FluentDataAnnotations.Mvc\FluentDataAnnotations.Mvc.csproj", "{45ACBF9B-47CA-419F-B803-EDF6561C90E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3B7D6E7E-246A-4DF3-B53E-AE258B897EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B7D6E7E-246A-4DF3-B53E-AE258B897EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B7D6E7E-246A-4DF3-B53E-AE258B897EDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45ACBF9B-47CA-419F-B803-EDF6561C90E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45ACBF9B-47CA-419F-B803-EDF6561C90E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45ACBF9B-47CA-419F-B803-EDF6561C90E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45ACBF9B-47CA-419F-B803-EDF6561C90E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

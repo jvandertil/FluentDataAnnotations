@@ -19,10 +19,6 @@ using FluentDataAnnotations.AttributeBuilders;
 
 namespace FluentDataAnnotations.Mvc
 {
-    /* TODO:
-     * Overridden Default ModelBinder (Validation & Binding)
-     * MVC2 ValidationProvider
-     */
     public static class MvcDataAnnotationExtensions
     {
         public static BaseDataAnnotationInterface DenyClientModification(this BaseDataAnnotationInterface builder)
