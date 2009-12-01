@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractDataAnnotationsModelBinder.cs" />
     <Compile Include="DenyClientModificationAttribute.cs" />
     <Compile Include="IPropertyBinder.cs" />
     <Compile Include="MvcDataAnnotations.cs" />
