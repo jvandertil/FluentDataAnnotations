@@ -41,6 +41,25 @@ namespace FluentDataAnnotations
             _metadataAssembly = metaDataAssembly;
         }
 
+        public static void PrimeCacheFromAssembly(Assembly assembly)
+        {
+            var types = from a in assembly.GetTypes()
+                        where a.BaseType != null && a.BaseType.IsSubclassOf(typeof(DataAnnotations))
+                        select a;
+
+            foreach(var type in types)
+            {
+                if(type.GetGenericArguments().Count() == 1)
+                {
+                    var objectType = type.GetGenericArguments()[0];
+
+                    var annotations = assembly.CreateInstance(type.FullName) as DataAnnotations;
+
+                    Cache.AddToCache(objectType, annotations);
+                }
+            }
+        }
+
         public override ICustomTypeDescriptor GetTypeDescriptor(Type objectType, object instance)
         {
             var assembly = (_metadataAssembly ?? objectType.Assembly);

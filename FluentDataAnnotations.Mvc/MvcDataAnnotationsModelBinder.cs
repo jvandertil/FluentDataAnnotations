@@ -44,7 +44,7 @@ namespace FluentDataAnnotations.Mvc
             if (PropertyBinders.ContainsKey(propertyDescriptor.PropertyType))
             {
                 //Replace form value with value we got from the PropertyBinder
-                value = PropertyBinders[propertyDescriptor.PropertyType].BindProperty(controllerContext, bindingContext);
+                value = PropertyBinders[propertyDescriptor.PropertyType].BindProperty(controllerContext, bindingContext, propertyDescriptor.Name);
             }
 
             base.SetProperty(controllerContext, bindingContext, propertyDescriptor, value);
