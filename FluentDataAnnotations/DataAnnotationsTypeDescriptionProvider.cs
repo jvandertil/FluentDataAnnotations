@@ -28,7 +28,7 @@ namespace FluentDataAnnotations
     {
         private readonly Assembly _metadataAssembly;
         private static readonly DataAnnotationsCache Cache = new DataAnnotationsCache();
-        public const bool CACHING = true;
+        public const bool Caching = true;
 
         public DataAnnotationsTypeDescriptionProvider(TypeDescriptionProvider existingProvider)
             : this(existingProvider, null)
@@ -48,7 +48,7 @@ namespace FluentDataAnnotations
             // Example: ProductMetadata -> FluentMetadata<Product> -> FluentMetadata
             DataAnnotations annotations;
 
-            if (CACHING && Cache.IsInCache(objectType))
+            if (Caching && Cache.IsInCache(objectType))
             {
                 annotations = Cache.RetreiveFromCache(objectType);
             }
@@ -119,11 +119,16 @@ namespace FluentDataAnnotations
 
         public void AddToCache(Type type, DataAnnotations annotations)
         {
-            _lock.EnterWriteLock();
+            try
+            {
+                _lock.EnterWriteLock();
 
-            Cache[type] = annotations;
-
-            _lock.ExitWriteLock();
+                Cache[type] = annotations;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace FluentDataAnnotations.AttributeBuilders
 {
     public class BaseDataAnnotationInterface : IAttributeBuilder
     {
-        protected IList<IAttributeBuilder> _attributeBuilders;
+        protected IList<IAttributeBuilder> AttributeBuilders;
         protected IList<Attribute> _attributes;
 
         public IEnumerable<Attribute> Attributes
@@ -37,7 +37,7 @@ namespace FluentDataAnnotations.AttributeBuilders
                     yield return attr;
                 }
 
-                foreach (var attr in _attributeBuilders.SelectMany(builder => builder.Attributes))
+                foreach (var attr in AttributeBuilders.SelectMany(builder => builder.Attributes))
                 {
                     yield return attr;
                 }
@@ -46,7 +46,7 @@ namespace FluentDataAnnotations.AttributeBuilders
 
         public BaseDataAnnotationInterface()
         {
-            _attributeBuilders = new List<IAttributeBuilder>();
+            AttributeBuilders = new List<IAttributeBuilder>();
             _attributes = new List<Attribute>();
         }
 
@@ -60,7 +60,7 @@ namespace FluentDataAnnotations.AttributeBuilders
             get
             {
                 var builder = new ValidationAttributeBuilder();
-                _attributeBuilders.Add(builder);
+                AttributeBuilders.Add(builder);
 
                 return builder;
             }
@@ -72,7 +72,7 @@ namespace FluentDataAnnotations.AttributeBuilders
             {
                 var builder = new DataTypeAttributeBuilder();
 
-                _attributeBuilders.Add(builder);
+                AttributeBuilders.Add(builder);
 
                 return builder;
             }
@@ -82,7 +82,7 @@ namespace FluentDataAnnotations.AttributeBuilders
         {
             var builder = new UiHintAttributeBuilder();
 
-            _attributeBuilders.Add(builder);
+            AttributeBuilders.Add(builder);
 
             return builder;
         }
